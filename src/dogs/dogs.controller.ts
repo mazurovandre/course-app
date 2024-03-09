@@ -3,11 +3,12 @@ import {
   Get,
   Post,
   Body,
-  // Patch,
+  Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { Dog, DogsService } from './dogs.service';
+import { CreateDogTdo, Dog, DogsService } from './dogs.service';
 
 @Controller('dogs')
 export class DogsController {
@@ -15,27 +16,21 @@ export class DogsController {
 
   @Post()
   create(@Body() createDogDto: Dog) {
-    console.log('===>', createDogDto);
     return this.dogsService.create(createDogDto);
   }
 
   @Get()
-  findAll() {
-    return this.dogsService.findAll();
+  findDogs(@Query('name') name: string) {
+    return name ? this.dogsService.findOne(name) : this.dogsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dogsService.findOne(+id);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDogDto: CreateDogTdo) {
+    return this.dogsService.update(+id, updateDogDto);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDogDto: UpdateDogDto) {
-  //   return this.dogsService.update(+id, updateDogDto);
-  // }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete()
+  remove(@Body('id') id: string) {
     return this.dogsService.remove(+id);
   }
 }

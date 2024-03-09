@@ -20,6 +20,7 @@ export class DogsService {
       id: Date.now(),
       ...createDogTdo,
     };
+
     return this.dogs.push(dog);
   }
 
@@ -27,15 +28,30 @@ export class DogsService {
     return this.dogs;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dog`;
+  findOne(name: string) {
+    const target = this.dogs.filter(
+      (item) => item.name.toLowerCase() === name.toLowerCase(),
+    );
+
+    return target || 'Dog not found';
   }
 
-  // update(id: number, updateDogDto: Dog) {
-  //   return `This action updates a #${id} dog`;
-  // }
+  update(id: number, updateDogDto: CreateDogTdo) {
+    const index = this.dogs.findIndex((item) => item.id === id);
+    this.dogs[index] = {
+      ...this.dogs[index],
+      ...updateDogDto,
+    };
+
+    return index >= 0 ? this.dogs[index] : 'Dog not found';
+  }
 
   remove(id: number) {
-    return `This action removes a #${id} dog`;
+    const index = this.dogs.findIndex((item) => item.id === id);
+    if (index >= 0) {
+      this.dogs.splice(index, 1);
+    }
+
+    return index >= 0 ? `This action removes a #${id} dog` : 'Dog not found';
   }
 }
